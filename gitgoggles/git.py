@@ -155,13 +155,18 @@ class Tag(Ref):
 class Repository(object):
     def __init__(self, path=None):
         self.path = os.path.abspath(path or os.path.curdir)
-        # Hack, make configurable
-        try:
-            self.master = 'origin/master'
-            master_sha = self.shell('git', 'log', '-1', '--pretty=format:%H', self.master, exceptions=True).split
-        except:
-            self.master = 'master'
-            master_sha = self.shell('git', 'log', '-1', '--pretty=format:%H', self.master).split
+#        # Hack, make configurable
+#        try:
+#            self.master = 'origin/master'
+#            master_sha = self.shell('git', 'log', '-1', '--pretty=format:%H', self.master, exceptions=True).split
+#        except:
+#            self.master = 'master'
+#            master_sha = self.shell('git', 'log', '-1', '--pretty=format:%H', self.master).split
+
+        ## Always compare with current branch..
+        self.master = self.branch()
+        master_sha = self.shell('git', 'log', '-1', '--pretty=format:%H', self.master, exceptions=True).split
+
         self.master_sha = master_sha and master_sha[0].strip() or ''
 
     def shell(self, *args, **kwargs):
